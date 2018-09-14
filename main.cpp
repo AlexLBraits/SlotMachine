@@ -1,5 +1,9 @@
-// #include <GLUT/glut.h>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -67,16 +71,6 @@ void init(void)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-}
-
-void special(int key, int x, int y)
-{
-  printf("special->key: %d\n", key);
-
-  if (key == 27)
-  {
-    exit(0);
-  }
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -148,7 +142,6 @@ int main(int argc, char **argv)
 
   glutDisplayFunc(display);
   glutReshapeFunc(reshape);
-  glutSpecialFunc(special);
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
 
