@@ -25,6 +25,8 @@ jni.cpp.out
 *.o
 *.stash
 *.user
+*.exe
+*.dll
 moc_*
 qrc_*
 Makefile*
@@ -34,4 +36,4 @@ release/
 sqlite/
 *.Debug
 *.Release
-RedWood
+SlotMachine

@@ -1,7 +1,7 @@
 PROJECT_NAME := SlotMachine
 
 ifeq ($(OS),Windows_NT)
-	CXXFLAGS += -Iglut/include
+	CXXFLAGS += -I3rdparty/glut/include
 	LDFLAGS += -L3rdparty/glut/lib -lopengl32 -lglu32 -lglut32
 else
 	UNAME := $(shell uname)
@@ -14,7 +14,7 @@ endif
 all: $(PROJECT_NAME) test
 
 $(PROJECT_NAME): main.cpp
-	g++ -o $(PROJECT_NAME) main.cpp $(LDFLAGS)
+	g++ -o $(PROJECT_NAME) main.cpp $(CXXFLAGS) $(LDFLAGS)
 
 test:
 	./$(PROJECT_NAME)
