@@ -5,7 +5,7 @@
 #include <cstdio>
 
 SlotMachine::SlotMachine()
-    : m_tex(0)
+    : m_state(State::idle)
 {
     m_tex = TextureManager::getInstance().get("res/parts/back.png");
     m_rect = Rect(0, 0, 960, 640);
@@ -20,8 +20,6 @@ SlotMachine::SlotMachine()
         m_wheels.push_back(r);
         r.x += 144;
     }
-
-    this->reset();
 }
 void SlotMachine::reset()
 {
@@ -29,30 +27,26 @@ void SlotMachine::reset()
     {
         wheel.reset();
     }
-
-    m_stop = false;
+    m_state = State::working;
 }
 void SlotMachine::stop()
 {
-    m_stop = true;
+    m_state = State::idle;
+    for (auto &wheel : m_wheels)
+    {
+        if (wheel.speed() > 0)
+        {
+            wheel.stop();
+            m_state = State::stops;
+            break;
+        }
+    }
 }
 void SlotMachine::update(double time)
 {
     for (auto &wheel : m_wheels)
     {
         wheel.update(time);
-    }
-
-    if (m_stop)
-    {
-        for (auto &wheel : m_wheels)
-        {
-            if (wheel.speed() > 0)
-            {
-                wheel.stop();
-                break;
-            }
-        }
     }
 }
 void SlotMachine::draw()

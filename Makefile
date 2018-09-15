@@ -1,4 +1,5 @@
 PROJECT_NAME=SlotMachine
+SOIL=3rdparty/soil/lib/libSOIL.a
 SRC=$(wildcard *.cpp)
 
 CXXFLAGS += -std=c++11 -g
@@ -15,7 +16,10 @@ else
 	endif
 endif
 
-all: $(PROJECT_NAME) test
+all: $(SOIL) $(PROJECT_NAME) test
+
+$(SOIL):
+	cd 3rdparty/soil/projects/makefile && $(MAKE)
 
 $(PROJECT_NAME): $(SRC)
 	g++ -o $@ $^ $(CXXFLAGS) $(LDFLAGS)
@@ -25,3 +29,5 @@ test:
 
 clean:
 	rm -f $(PROJECT_NAME)
+	rm -f $(SOIL)
+	rm -f 3rdparty/soil/obj/*.o

@@ -29,7 +29,7 @@ void Wheel::loadImages()
 }
 
 Wheel::Wheel(const Rect &rect) 
-: m_rect(rect), m_offset(0)
+: m_rect(rect), m_offset(0), m_speed(0)
 {
     m_cells.resize(10);
     for (int i = 0; i < 10; ++i)
@@ -37,8 +37,6 @@ Wheel::Wheel(const Rect &rect)
         m_cells[i].m_id = i;
     }
     std::random_shuffle(m_cells.begin(), m_cells.end());
-
-    this->reset();
 }
 void Wheel::update(double time)
 {
@@ -53,10 +51,11 @@ void Wheel::update(double time)
 void Wheel::draw()
 {
     glEnable(GL_SCISSOR_TEST);
-    Rect sr = m_rect * SlotMachine::getInstance().getScale(); 
+    Vec2 scale = SlotMachine::getInstance().scale();
+    Rect sr = m_rect * scale;
     glScissor(sr.x, sr.y, sr.width, sr.height);
 
-    Rect r = Rect(m_rect.x, m_rect.y - m_offset, CELL_SIZE, CELL_SIZE) * SlotMachine::getInstance().getScale();
+    Rect r = Rect(m_rect.x, m_rect.y - m_offset, CELL_SIZE, CELL_SIZE) * scale;
     for (int i = 0, p = m_pos; i < 4; ++i, p = _next(p))
     {
         drawTexturedRectangle(r, Wheel::images[m_cells[p].m_id]);
@@ -68,5 +67,5 @@ void Wheel::reset()
 {
     m_pos = 0;
     m_speed = getRandomSpeed();
-    m_stop = false;;
+    m_stop = false;
 }

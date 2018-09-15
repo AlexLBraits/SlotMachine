@@ -20,34 +20,13 @@ void display_fps(int x, int y, const char *fpsString)
 size_t frames = 0;
 char fpsString[64] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-int lastX = 0;
-int lastY = 0;
-
 void display(void)
 {
-  /* clear all pixels  */
   glClear(GL_COLOR_BUFFER_BIT);
 
-  /* */
   SlotMachine::getInstance().draw();
-
-  float sz = 5;
-  glColor3f(1.0, 1.0, 1.0);
-  glBegin(GL_POLYGON);
-  glVertex3f(lastX - sz, lastY - sz, 0.0);
-  glVertex3f(lastX + sz, lastY - sz, 0.0);
-  glVertex3f(lastX + sz, lastY + sz, 0.0);
-  glVertex3f(lastX - sz, lastY + sz, 0.0);
-  glEnd();
-
-  /*
-  * draw FPS string
-  */
   display_fps(0, 10, fpsString);
 
-  /* don't wait!  
- * start processing buffered OpenGL routines 
- */
   glFlush();
   glutSwapBuffers();
 
@@ -56,7 +35,6 @@ void display(void)
 
 void init(void)
 {
-  /* select clearing color 	*/
   glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
@@ -71,18 +49,19 @@ void keyboard(unsigned char key, int x, int y)
 void stop(int)
 {
   SlotMachine::getInstance().stop();
+  if (SlotMachine::getInstance().state() != SlotMachine::State::idle)
+  {
+    glutTimerFunc(500, stop, 0);
+  }
 }
 
 void mouse(int button, int state, int x, int y)
 {
   printf("mouse button=%d, state=%d, x=%d, y=%d\n", button, state, x, y);
-  if (button == 0 && state == 0)
+  if (button == 0 && state == 0 && SlotMachine::getInstance().state() == SlotMachine::State::idle)
   {
-    lastX = x;
-    lastY = glutGet(GLUT_WINDOW_HEIGHT) - y;
     SlotMachine::getInstance().reset();
     glutTimerFunc(4000, stop, 0);
-    glutPostRedisplay();
   }
 }
 
@@ -90,12 +69,10 @@ void reshape(int w, int h)
 {
   glViewport(0, 0, w, h);
 
-  /* initialize viewing values  */
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0, w, 0.0, h, -1.0, 1.0);
 
-  /* */
   SlotMachine::getInstance().reshape(w, h);
 }
 
@@ -125,13 +102,6 @@ void calculate_fps(int value)
   glutTimerFunc(1000, calculate_fps, 0);
 }
 
-/* 
- * Declare initial window size, position, and display mode
- * (single buffer and RGBA).  Open window with "hello"
- * in its title bar.  Call initialization routines.
- * Register callback function to display graphics.
- * Enter main loop and process events.
- */
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
@@ -152,5 +122,5 @@ int main(int argc, char **argv)
 
   // glutFullScreen();
   glutMainLoop();
-  return 0; /* ANSI C requires main to return int. */
+  return 0;
 }

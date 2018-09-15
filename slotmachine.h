@@ -11,6 +11,13 @@ class SlotMachine : public Singleton<SlotMachine>
     friend class Singleton<SlotMachine>;
 
   public:
+    enum class State
+    {
+      idle,
+      working,
+      stops
+    };
+
     void reset();
     void stop();
     void update(double time);
@@ -19,22 +26,20 @@ class SlotMachine : public Singleton<SlotMachine>
     void mouse(int button, int state, int x, int y);
     void reshape(int width, int height);
 
-    Vec2 getScale() const {return m_scale;};
+    Vec2 scale() const {return m_scale;}
+    State state() const {return m_state;}
 
   private:
     SlotMachine();
 
   private:
+    State m_state;
     Vec2 m_scale;
-
     Rect m_rect;    
     GLuint m_tex;
-
     Rect m_rect_shadow;
     GLuint m_tex_shadow;
-
     std::vector<Wheel> m_wheels;
-    bool m_stop;
 };
 
 #endif /* SLOT_MACHINE_H */
