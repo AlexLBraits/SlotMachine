@@ -12,7 +12,8 @@ class SlotMachine : public Singleton<SlotMachine>
 
   public:
     void reset();
-    int update(double time);
+    void stop();
+    void update(double time);
     void draw();
 
     void mouse(int button, int state, int x, int y);
@@ -33,6 +34,7 @@ class SlotMachine : public Singleton<SlotMachine>
     GLuint m_tex_shadow;
 
     std::vector<Wheel> m_wheels;
+    bool m_stop;
 };
 
 #endif /* SLOT_MACHINE_H */

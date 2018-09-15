@@ -20,6 +20,8 @@ SlotMachine::SlotMachine()
         m_wheels.push_back(r);
         r.x += 144;
     }
+
+    this->reset();
 }
 void SlotMachine::reset()
 {
@@ -27,15 +29,31 @@ void SlotMachine::reset()
     {
         wheel.reset();
     }
+
+    m_stop = false;
 }
-int SlotMachine::update(double time)
+void SlotMachine::stop()
 {
-    int rv = 1;
+    m_stop = true;
+}
+void SlotMachine::update(double time)
+{
     for (auto &wheel : m_wheels)
     {
-        rv += wheel.update(time);
+        wheel.update(time);
     }
-    return rv;
+
+    if (m_stop)
+    {
+        for (auto &wheel : m_wheels)
+        {
+            if (wheel.speed() > 0)
+            {
+                wheel.stop();
+                break;
+            }
+        }
+    }
 }
 void SlotMachine::draw()
 {

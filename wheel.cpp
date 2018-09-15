@@ -2,6 +2,15 @@
 #include "texmanager.h"
 #include "slotmachine.h"
 #include <algorithm>
+#include <random>
+
+float getRandomSpeed()
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<float> dis(0.2, 0.5);
+    return dis(gen) * 3.0;
+}
 
 GLuint Wheel::images[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -19,7 +28,8 @@ void Wheel::loadImages()
     images[9] = TextureManager::getInstance().get("res/symbols/10.png");
 }
 
-Wheel::Wheel(const Rect &rect) : m_rect(rect)
+Wheel::Wheel(const Rect &rect) 
+: m_rect(rect), m_offset(0)
 {
     m_cells.resize(10);
     for (int i = 0; i < 10; ++i)
@@ -27,10 +37,18 @@ Wheel::Wheel(const Rect &rect) : m_rect(rect)
         m_cells[i].m_id = i;
     }
     std::random_shuffle(m_cells.begin(), m_cells.end());
+
+    this->reset();
 }
-int Wheel::update(double time)
+void Wheel::update(double time)
 {
-    return 1;
+    m_offset += m_speed * time;
+    if (m_offset > CELL_SIZE)
+    {
+        m_offset = 0;
+        m_pos = _next(m_pos);
+        if (m_stop) m_speed = 0;
+    }
 }
 void Wheel::draw()
 {
@@ -38,14 +56,17 @@ void Wheel::draw()
     Rect sr = m_rect * SlotMachine::getInstance().getScale(); 
     glScissor(sr.x, sr.y, sr.width, sr.height);
 
-    Rect r = Rect(m_rect.x, m_rect.y - 72, 144, 144) * SlotMachine::getInstance().getScale();
-    for (int i = 0; i < 4; ++i)
+    Rect r = Rect(m_rect.x, m_rect.y - m_offset, CELL_SIZE, CELL_SIZE) * SlotMachine::getInstance().getScale();
+    for (int i = 0, p = m_pos; i < 4; ++i, p = _next(p))
     {
-        drawTexturedRectangle(r, Wheel::images[m_cells[i].m_id]);
+        drawTexturedRectangle(r, Wheel::images[m_cells[p].m_id]);
         r.y += r.height;
     }
     glDisable(GL_SCISSOR_TEST);
 }
 void Wheel::reset()
 {
+    m_pos = 0;
+    m_speed = getRandomSpeed();
+    m_stop = false;;
 }

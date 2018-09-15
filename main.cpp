@@ -49,6 +49,7 @@ void display(void)
  * start processing buffered OpenGL routines 
  */
   glFlush();
+  glutSwapBuffers();
 
   ++frames;
 }
@@ -67,6 +68,11 @@ void keyboard(unsigned char key, int x, int y)
   }
 }
 
+void stop(int)
+{
+  SlotMachine::getInstance().stop();
+}
+
 void mouse(int button, int state, int x, int y)
 {
   printf("mouse button=%d, state=%d, x=%d, y=%d\n", button, state, x, y);
@@ -74,7 +80,8 @@ void mouse(int button, int state, int x, int y)
   {
     lastX = x;
     lastY = glutGet(GLUT_WINDOW_HEIGHT) - y;
-
+    SlotMachine::getInstance().reset();
+    glutTimerFunc(4000, stop, 0);
     glutPostRedisplay();
   }
 }
@@ -92,19 +99,15 @@ void reshape(int w, int h)
   SlotMachine::getInstance().reshape(w, h);
 }
 
-void update(int value)
+void update()
 {
   static double last_update_time = 0;
   double current_time = glutGet(GLUT_ELAPSED_TIME);
   double elapsed_time = current_time - last_update_time;
 
-  if (SlotMachine::getInstance().update(elapsed_time))
-  {
-    last_update_time = current_time;
-    glutPostRedisplay();
-  }
-
-  glutTimerFunc(16, update, 0);
+  SlotMachine::getInstance().update(elapsed_time);
+  last_update_time = current_time;
+  glutPostRedisplay();
 }
 
 void calculate_fps(int value)
@@ -130,7 +133,7 @@ void calculate_fps(int value)
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowSize(250, 250);
   glutInitWindowPosition(100, 100);
   glutCreateWindow("hello");
@@ -142,10 +145,10 @@ int main(int argc, char **argv)
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
 
-  glutTimerFunc(16, update, 0);
+  glutIdleFunc(update);
   glutTimerFunc(1000, calculate_fps, 0);
 
-//  glutFullScreen();
+  // glutFullScreen();
   glutMainLoop();
   return 0; /* ANSI C requires main to return int. */
 }
