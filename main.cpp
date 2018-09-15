@@ -42,6 +42,7 @@ void keyboard(unsigned char key, int x, int y)
 {
   if (key == 27)
   {
+    /// завершаем программу по клавише ESC
     exit(0);
   }
 }
@@ -51,6 +52,8 @@ void stop(int)
   SlotMachine::getInstance().stop();
   if (SlotMachine::getInstance().state() != SlotMachine::State::idle)
   {
+    /// повторяем команду stop для каждого следующего барабана
+    /// через 0.5 секунды
     glutTimerFunc(500, stop, 0);
   }
 }
@@ -58,10 +61,16 @@ void stop(int)
 void mouse(int button, int state, int x, int y)
 {
   printf("mouse button=%d, state=%d, x=%d, y=%d\n", button, state, x, y);
-  if (button == 0 && state == 0 && SlotMachine::getInstance().state() == SlotMachine::State::idle)
+  if (button == 0 && state == 0)
   {
-    SlotMachine::getInstance().reset();
-    glutTimerFunc(4000, stop, 0);
+    if (SlotMachine::getInstance().state() == SlotMachine::State::idle)
+    {
+      /// если SlotMachine простаивает, то
+      /// запускаем барабаны
+      SlotMachine::getInstance().reset();
+      /// через 4.5 секунды начнём останавливать барабаны
+      glutTimerFunc(4500, stop, 0);
+    }
   }
 }
 
