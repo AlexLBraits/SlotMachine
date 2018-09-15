@@ -29,7 +29,6 @@ jni.cpp.out
 *.dll
 moc_*
 qrc_*
-Makefile*
 *.app
 debug/
 release/
