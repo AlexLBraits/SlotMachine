@@ -19,7 +19,7 @@ GLuint loadTexture(const char* path)
     return m_tex_2d;
 }
 
-void drawTexturedRectangle(const Rectangle &rect, GLuint tex)
+void drawTexturedRectangle(const Rect &rect, GLuint tex)
 {
     /* Разрешение наложение текстуры */
     glEnable(GL_TEXTURE_2D);

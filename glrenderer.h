@@ -7,17 +7,17 @@
 #include <GL/glut.h>
 #endif
 
-struct Rectangle
+struct Rect
 {
     float x;
     float y;
     float width;
     float height;
 
-    Rectangle() : x(0), y(0), width(0), height(0) {}
+    Rect() : x(0), y(0), width(0), height(0) {}
 };
 
 GLuint loadTexture(const char* path);
-void drawTexturedRectangle(const Rectangle &rect, GLuint tex);
+void drawTexturedRectangle(const Rect &rect, GLuint tex);
 
 #endif /* GL_RENDERER_H */

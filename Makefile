@@ -1,6 +1,9 @@
 PROJECT_NAME=SlotMachine
 SRC=$(wildcard *.cpp)
 
+CXXFLAGS += -std=c++11
+LDFLAGS += -L3rdparty/soil/lib -lSOIL
+
 ifeq ($(OS),Windows_NT)
 	CXXFLAGS += -I3rdparty/glut/include
 	LDFLAGS += -L3rdparty/glut/lib -lopengl32 -lglu32 -lglut32
@@ -11,7 +14,6 @@ else
 	LDFLAGS += -framework GLUT -framework OpenGL
 	endif
 endif
-LDFLAGS += -L3rdparty/soil/lib -lSOIL
 
 all: $(PROJECT_NAME) test
 

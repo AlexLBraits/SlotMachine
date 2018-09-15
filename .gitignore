@@ -27,6 +27,7 @@ jni.cpp.out
 *.user
 *.exe
 *.dll
+*.a
 moc_*
 qrc_*
 *.app

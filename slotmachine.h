@@ -20,7 +20,7 @@ class SlotMachine : public Singleton<SlotMachine>
     SlotMachine();
 
   private:
-    Rectangle m_rect;
+    Rect m_rect;
     GLuint m_tex;
 };
 
