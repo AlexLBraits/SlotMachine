@@ -19,6 +19,7 @@ endif
 all: $(SOIL) $(PROJECT_NAME) test
 
 $(SOIL):
+	mkdir 3rdparty/soil/lib || \
 	cd 3rdparty/soil/projects/makefile && $(MAKE)
 
 $(PROJECT_NAME): $(SRC)

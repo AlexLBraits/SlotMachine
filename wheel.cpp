@@ -29,7 +29,7 @@ void Wheel::loadImages()
 }
 
 Wheel::Wheel(const Rect &rect) 
-: m_rect(rect), m_offset(0), m_speed(0)
+: m_rect(rect), m_offset(0), m_speed(0), m_pos(0)
 {
     m_cells.resize(10);
     for (int i = 0; i < 10; ++i)
