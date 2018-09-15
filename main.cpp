@@ -1,12 +1,10 @@
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
+#include "glrenderer.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
+#include "slotmachine.h"
 
 void display_fps(int x, int y, const char *fpsString)
 {
@@ -30,29 +28,22 @@ void display(void)
   /* clear all pixels  */
   glClear(GL_COLOR_BUFFER_BIT);
 
-  int width = glutGet(GLUT_WINDOW_WIDTH);
-  int height = glutGet(GLUT_WINDOW_HEIGHT);
-  float x = (float)lastX / width;
-  float y = (float)(height - lastY) / height;
-  float sz = .05f;
+  /* */
+  SlotMachine::getInstance().draw();
 
-  /* draw white polygon (rectangle) with corners at
- * (0.25, 0.25, 0.0) and (0.75, 0.75, 0.0)  
- */
+  float sz = 5;
   glColor3f(1.0, 1.0, 1.0);
-  // unsigned int
-  // glColor3bv (1.0, 1.0, 1.0);
   glBegin(GL_POLYGON);
-  glVertex3f(x - sz, y - sz, 0.0);
-  glVertex3f(x + sz, y - sz, 0.0);
-  glVertex3f(x + sz, y + sz, 0.0);
-  glVertex3f(x - sz, y + sz, 0.0);
+  glVertex3f(lastX - sz, lastY - sz, 0.0);
+  glVertex3f(lastX + sz, lastY - sz, 0.0);
+  glVertex3f(lastX + sz, lastY + sz, 0.0);
+  glVertex3f(lastX - sz, lastY + sz, 0.0);
   glEnd();
 
   /*
   * draw FPS string
   */
-  display_fps(0, 0, fpsString);
+  display_fps(0, 10, fpsString);
 
   /* don't wait!  
  * start processing buffered OpenGL routines 
@@ -66,17 +57,10 @@ void init(void)
 {
   /* select clearing color 	*/
   glClearColor(0.0, 0.0, 0.0, 0.0);
-
-  /* initialize viewing values  */
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
 }
 
 void keyboard(unsigned char key, int x, int y)
 {
-  printf("keyboard->key: %d\n", key);
-
   if (key == 27)
   {
     exit(0);
@@ -89,25 +73,38 @@ void mouse(int button, int state, int x, int y)
   if (button == 0 && state == 0)
   {
     lastX = x;
-    lastY = y;
+    lastY = glutGet(GLUT_WINDOW_HEIGHT) - y;
+
     glutPostRedisplay();
   }
 }
 
 void reshape(int w, int h)
 {
-  printf("reshape: w=%d h=%d\n", w, h);
+  glViewport(0, 0, w, h);
+
+  /* initialize viewing values  */
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0.0, w, 0.0, h, -1.0, 1.0);
+
+  /* */
+  SlotMachine::getInstance().reshape(w, h);
 }
 
 void update(int value)
 {
-  double a = 2;
-  for (size_t i = 0; i < 1000000; ++i)
-    a *= a;
+  static double last_update_time = 0;
+  double current_time = glutGet(GLUT_ELAPSED_TIME);
+  double elapsed_time = current_time - last_update_time;
 
-  glutPostRedisplay();
+  if (SlotMachine::getInstance().update(elapsed_time))
+  {
+    last_update_time = current_time;
+    glutPostRedisplay();
+  }
 
-  glutTimerFunc(16.6666666667, update, 0);
+  glutTimerFunc(16, update, 0);
 }
 
 void calculate_fps(int value)
@@ -145,10 +142,10 @@ int main(int argc, char **argv)
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
 
-  glutTimerFunc(16.6666666667, update, 0);
+  glutTimerFunc(16, update, 0);
   glutTimerFunc(1000, calculate_fps, 0);
 
-  glutFullScreen();
+//  glutFullScreen();
   glutMainLoop();
   return 0; /* ANSI C requires main to return int. */
 }

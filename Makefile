@@ -1,20 +1,22 @@
-PROJECT_NAME := SlotMachine
+PROJECT_NAME=SlotMachine
+SRC=$(wildcard *.cpp)
 
 ifeq ($(OS),Windows_NT)
 	CXXFLAGS += -I3rdparty/glut/include
 	LDFLAGS += -L3rdparty/glut/lib -lopengl32 -lglu32 -lglut32
 else
-	UNAME := $(shell uname)
+	UNAME=$(shell uname)
 	ifeq ($(UNAME), Darwin)
 	CXXFLAGS += -Wno-deprecated-declarations
 	LDFLAGS += -framework GLUT -framework OpenGL
 	endif
 endif
+LDFLAGS += -L3rdparty/soil/lib -lSOIL
 
 all: $(PROJECT_NAME) test
 
-$(PROJECT_NAME): main.cpp
-	g++ -o $(PROJECT_NAME) main.cpp $(CXXFLAGS) $(LDFLAGS)
+$(PROJECT_NAME): $(SRC)
+	g++ -o $@ $^ $(CXXFLAGS) $(LDFLAGS)
 
 test:
 	./$(PROJECT_NAME)
