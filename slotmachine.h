@@ -3,6 +3,8 @@
 
 #include "singleton.h"
 #include "glrenderer.h"
+#include "wheel.h"
+#include <vector>
 
 class SlotMachine : public Singleton<SlotMachine>
 {
@@ -16,12 +18,21 @@ class SlotMachine : public Singleton<SlotMachine>
     void mouse(int button, int state, int x, int y);
     void reshape(int width, int height);
 
+    Vec2 getScale() const {return m_scale;};
+
   private:
     SlotMachine();
 
   private:
-    Rect m_rect;
+    Vec2 m_scale;
+
+    Rect m_rect;    
     GLuint m_tex;
+
+    Rect m_rect_shadow;
+    GLuint m_tex_shadow;
+
+    std::vector<Wheel> m_wheels;
 };
 
 #endif /* SLOT_MACHINE_H */

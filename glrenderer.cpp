@@ -2,7 +2,7 @@
 #include "3rdparty/soil/src/SOIL.h"
 #include <cstdio>
 
-GLuint loadTexture(const char* path)
+GLuint loadTexture(const char *path)
 {
     GLuint m_tex_2d = SOIL_load_OGL_texture(
         path,
@@ -19,9 +19,25 @@ GLuint loadTexture(const char* path)
     return m_tex_2d;
 }
 
-void drawTexturedRectangle(const Rect &rect, GLuint tex)
+void drawTexturedRectangle(const Rect &rect, GLuint tex, BlendingMode bmode)
 {
-    /* Разрешение наложение текстуры */
+    switch (bmode)
+    {
+    case BlendingMode::Normal:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        break;
+
+    case BlendingMode::Additive:
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        break;
+
+    case BlendingMode::None:
+    default:
+        break;
+    }
+
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, tex);
@@ -35,7 +51,7 @@ void drawTexturedRectangle(const Rect &rect, GLuint tex)
     glVertex3f(rect.x, rect.y, 0.0f); // Низ лево
 
     glTexCoord2f(1.0f, 0.0f);
-    glVertex3f(rect.x + rect.width, 0.0f, 0.0f); // Низ право
+    glVertex3f(rect.x + rect.width, rect.y, 0.0f); // Низ право
 
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(rect.x + rect.width, rect.y + rect.height, 0.0f); // Верх право
@@ -47,9 +63,11 @@ void drawTexturedRectangle(const Rect &rect, GLuint tex)
     glVertex3f(rect.x + rect.width, rect.y + rect.height, 0.0f); // Верх право
 
     glTexCoord2f(0.0f, 1.0f);
-    glVertex3f(0.0f, rect.y + rect.height, 0.0f); // Верх лево
+    glVertex3f(rect.x, rect.y + rect.height, 0.0f); // Верх лево
 
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
+
+    glDisable(GL_BLEND);
 }

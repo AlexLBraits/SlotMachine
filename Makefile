@@ -1,7 +1,7 @@
 PROJECT_NAME=SlotMachine
 SRC=$(wildcard *.cpp)
 
-CXXFLAGS += -std=c++11
+CXXFLAGS += -std=c++11 -g
 LDFLAGS += -L3rdparty/soil/lib -lSOIL
 
 ifeq ($(OS),Windows_NT)
