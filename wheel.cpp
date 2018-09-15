@@ -8,7 +8,7 @@ float getRandomSpeed()
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    static std::uniform_real_distribution<float> dis(0.2, 0.5);
+    static std::uniform_real_distribution<float> dis(0.15, 0.75);
     return dis(gen) * 3.0;
 }
 

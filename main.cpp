@@ -99,7 +99,7 @@ void reshape(int w, int h)
   SlotMachine::getInstance().reshape(w, h);
 }
 
-void update()
+void update(int)
 {
   static double last_update_time = 0;
   double current_time = glutGet(GLUT_ELAPSED_TIME);
@@ -108,6 +108,8 @@ void update()
   SlotMachine::getInstance().update(elapsed_time);
   last_update_time = current_time;
   glutPostRedisplay();
+
+  glutTimerFunc(10, update, 0);
 }
 
 void calculate_fps(int value)
@@ -145,7 +147,7 @@ int main(int argc, char **argv)
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
 
-  glutIdleFunc(update);
+  glutTimerFunc(10, update, 0);
   glutTimerFunc(1000, calculate_fps, 0);
 
   // glutFullScreen();
