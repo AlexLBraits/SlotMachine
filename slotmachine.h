@@ -35,10 +35,16 @@ class SlotMachine : public Singleton<SlotMachine>
   private:
     State m_state;
     Vec2 m_scale;
-    Rect m_rect;    
-    GLuint m_tex;
-    Rect m_rect_shadow;
-    GLuint m_tex_shadow;
+
+    // Rect m_rect;    
+    // GLuint m_tex;
+    Quad m_back;
+
+    // Rect m_rect_shadow;
+    // GLuint m_tex_shadow;
+    Quad m_shadow;
+
+
     std::vector<Wheel> m_wheels;
 };
 

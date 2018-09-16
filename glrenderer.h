@@ -44,6 +44,17 @@ enum class BlendingMode {
     Additive
 };
 
-void drawTexturedRectangle(const Rect &rect, GLuint tex, BlendingMode bmode = BlendingMode::None);
+void drawTexturedRectangle(const Rect &rect, GLuint tex, BlendingMode bmode);
+
+struct Quad
+{
+    Rect m_rect;
+    GLuint m_tex;
+
+    void draw(const Vec2& scale, BlendingMode bmode = BlendingMode::None)
+    {
+        drawTexturedRectangle(m_rect * scale, m_tex, bmode);
+    }
+};
 
 #endif /* GL_RENDERER_H */

@@ -6,12 +6,13 @@
 
 #define CELL_SIZE 144
 
-struct Cell
+struct Cell : public Quad
 {
-    int m_id;
-    Rect m_rect;
-    Cell() : m_id(0)
+    static const char* image_names[10];
+
+    Cell()
     {
+        m_tex = 0;
         m_rect.x = 0;
         m_rect.y = 0;
         m_rect.width = CELL_SIZE;
@@ -21,14 +22,10 @@ struct Cell
 
 class Wheel
 {
-    static GLuint images[10];
-
   public:
-    static void loadImages();
-
     Wheel(const Rect &rect);
     void update(double time);
-    void draw();
+    void draw(const Vec2& scale);
     void reset();
 
     float speed() const {return m_speed;}
