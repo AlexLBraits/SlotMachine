@@ -4,6 +4,18 @@
 #include <cstdlib>
 #include <cstdio>
 
+static void 
+stop(int)
+{
+  SlotMachine::getInstance().stop();
+  if (SlotMachine::getInstance().state() != SlotMachine::State::idle)
+  {
+    /// повторяем команду stop для каждого следующего барабана
+    /// через 0.5 секунды
+    glutTimerFunc(500, stop, 0);
+  }
+}
+
 SlotMachine::SlotMachine()
     : m_state(State::idle)
 {
@@ -77,6 +89,18 @@ void SlotMachine::draw()
 }
 void SlotMachine::mouse(int button, int state, int x, int y)
 {
+  if (button == 0 && state == 0)
+  {
+    if (m_state == SlotMachine::State::idle && m_button.m_rect.contains(x / m_scale.x, y / m_scale.y))
+    {
+      /// если SlotMachine простаивает, то
+      /// запускаем барабаны
+      this->reset();
+
+      /// через 4.5 секунды начнём останавливать барабаны
+      glutTimerFunc(4500, ::stop, 0);
+    }
+  }
 }
 void SlotMachine::reshape(int width, int height)
 {

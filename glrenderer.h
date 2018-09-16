@@ -12,7 +12,7 @@ struct Vec2
     float x;
     float y;
 
-    Vec2() : x(0), y(0) {}
+    Vec2(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
 };
 
 struct Rect
@@ -34,6 +34,11 @@ struct Rect
         r.width = width * v.x;
         r.height = height * v.y;
         return r;
+    }
+    bool contains(float x, float y) 
+    {
+        return (x >= this->x && x < this->x + this->width) &&
+                (y >= this->y && y < this->y + this->height);
     }
 };
 
