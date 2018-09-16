@@ -74,7 +74,7 @@ void update(int)
   last_update_time = current_time;
   glutPostRedisplay();
 
-  glutTimerFunc(16, update, 0);
+  glutTimerFunc(15, update, 0);
 }
 
 void calculate_fps(int value)
@@ -105,10 +105,10 @@ int main(int argc, char **argv)
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
 
-  glutTimerFunc(16, update, 0);
+  glutTimerFunc(15, update, 0);
   glutTimerFunc(1000, calculate_fps, 0);
 
-  // glutFullScreen();
+  glutFullScreen();
   glutMainLoop();
   return 0;
 }

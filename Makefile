@@ -7,7 +7,7 @@ LDFLAGS += -L3rdparty/soil/lib -lSOIL
 
 ifeq ($(OS),Windows_NT)
 	CXXFLAGS += -I3rdparty/glut/include
-	LDFLAGS += -L3rdparty/glut/lib -lopengl32 -lglu32 -lglut32
+	LDFLAGS += -L3rdparty/glut/lib -lopengl32 -lglu32 -lglut32 -mwindows
 else
 	UNAME=$(shell uname)
 	ifeq ($(UNAME), Darwin)
