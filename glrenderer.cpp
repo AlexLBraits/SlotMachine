@@ -19,7 +19,7 @@ GLuint loadTexture(const char *path)
     return m_tex_2d;
 }
 
-void drawTexturedRectangle(const Rect &rect, GLuint tex, BlendingMode bmode)
+void drawTexturedRectangle(const Rect &rect, GLuint tex, const Color& color, BlendingMode bmode)
 {
     switch (bmode)
     {
@@ -44,7 +44,7 @@ void drawTexturedRectangle(const Rect &rect, GLuint tex, BlendingMode bmode)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glColor3f(1.0, 1.0, 1.0);
+    glColor4f(color.r, color.g, color.b, color.a);
     glBegin(GL_TRIANGLES);
 
     glTexCoord2f(0.0f, 0.0f);

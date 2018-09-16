@@ -13,6 +13,10 @@ SlotMachine::SlotMachine()
     m_shadow.m_rect = Rect(121, 159, 720, 432);
     m_shadow.m_tex = TextureManager::getInstance().get("res/parts/reel_shadow.png");
 
+    m_button.m_rect = Rect(647, 20, 197, 82);
+    m_button.m_tex = TextureManager::getInstance().get("res/parts/spin.png");
+    m_alpha_speed = -0.002;
+
     Rect r(121, 159, 142, 431);
     for (int i = 0; i < 5; ++i)
     {
@@ -47,17 +51,29 @@ void SlotMachine::update(double time)
     {
         wheel.update(time);
     }
+
+    /// анимация цвета кнопки (альфа-канала)
+    m_button_color.a += m_alpha_speed * time;
+    if (m_button_color.a > 1.0f || m_button_color.a < 0.3f)
+    {
+        m_alpha_speed = -m_alpha_speed;
+    }
+    m_button_color.a = std::max(0.3f, std::min(1.0f, m_button_color.a));
 }
 void SlotMachine::draw()
 {
-    // drawTexturedRectangle(m_rect * m_scale, m_tex);
     m_back.draw(m_scale);
     for (auto &wheel : m_wheels)
     {
         wheel.draw(m_scale);
     }
-    // drawTexturedRectangle(m_rect_shadow * m_scale, m_tex_shadow, BlendingMode::Normal);
     m_shadow.draw(m_scale, BlendingMode::Normal);
+
+    if (m_state == SlotMachine::State::idle)
+    {
+        /// если машина простаивает, рисуем кнопку SPIN
+        m_button.draw(m_scale, BlendingMode::Normal, m_button_color);
+    }
 }
 void SlotMachine::mouse(int button, int state, int x, int y)
 {

@@ -22,38 +22,51 @@ struct Rect
     int width;
     int height;
 
-    Rect(float x = 0, float y = 0, float width = 0, float height = 0) 
-        : x(x), y(y), width(width), height(height) {
-
-        }
-    Rect operator*(const Vec2& v) {
+    Rect(float x = 0, float y = 0, float width = 0, float height = 0)
+        : x(x), y(y), width(width), height(height)
+    {
+    }
+    Rect operator*(const Vec2 &v)
+    {
         Rect r;
         r.x = x * v.x;
         r.y = y * v.y;
         r.width = width * v.x;
-        r.height = height * v.y;        
+        r.height = height * v.y;
         return r;
     }
 };
 
-GLuint loadTexture(const char* path);
+GLuint loadTexture(const char *path);
 
-enum class BlendingMode {
+enum class BlendingMode
+{
     None,
     Normal,
     Additive
 };
 
-void drawTexturedRectangle(const Rect &rect, GLuint tex, BlendingMode bmode);
+struct Color
+{
+    float r;
+    float g;
+    float b;
+    float a;
+    Color() : r(1.0f), g(1.0f), b(1.0f), a(1.0f) {}
+};
+
+void drawTexturedRectangle(const Rect &rect, GLuint tex, const Color &color, BlendingMode bmode);
 
 struct Quad
 {
     Rect m_rect;
     GLuint m_tex;
 
-    void draw(const Vec2& scale, BlendingMode bmode = BlendingMode::None)
+    void draw(const Vec2 &scale,
+              BlendingMode bmode = BlendingMode::None,
+              const Color &color = Color())
     {
-        drawTexturedRectangle(m_rect * scale, m_tex, bmode);
+        drawTexturedRectangle(m_rect * scale, m_tex, color, bmode);
     }
 };
 

@@ -36,14 +36,12 @@ class SlotMachine : public Singleton<SlotMachine>
     State m_state;
     Vec2 m_scale;
 
-    // Rect m_rect;    
-    // GLuint m_tex;
     Quad m_back;
-
-    // Rect m_rect_shadow;
-    // GLuint m_tex_shadow;
     Quad m_shadow;
 
+    Quad m_button;
+    Color m_button_color;
+    float m_alpha_speed;
 
     std::vector<Wheel> m_wheels;
 };
